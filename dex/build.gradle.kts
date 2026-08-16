@@ -25,7 +25,7 @@ if (customPropertiesFile.exists()) {
 
 val telegramDir = file(providers.gradleProperty("telegram.dir").get())
 val botToken: String? = customProps.getProperty("telegram.bot.token")
-val mslPath = providers.gradleProperty("msl.plugin.path").get()
+val pluginPath = providers.gradleProperty("plugin.path").get()
 
 val androidSdkDir = file(providers.gradleProperty("android.sdk.dir").get())
 val compileSdkVersion = providers.gradleProperty("android.compile.sdk").get()
@@ -230,17 +230,17 @@ tasks.register<Exec>("buildDex") {
             println("Размер исходного DEX: ${inputBytes.size} байт")
             println("Размер после LZMA: ${compressedBytes.size} байт")
 
-            val nflPluginFile = file(mslPath)
-            if (nflPluginFile.exists()) {
-                val content = nflPluginFile.readText()
+            val pluginFile = file(pluginPath)
+            if (pluginFile.exists()) {
+                val content = pluginFile.readText()
                 val updatedContent = content.replace(
                     Regex("""DEX_BASE64\s*=\s*".*?""""),
                     """DEX_BASE64 = "$base64Dex""""
                 )
-                nflPluginFile.writeText(updatedContent)
-                println("Успешно обновлено в ${nflPluginFile.name}")
+                pluginFile.writeText(updatedContent)
+                println("Успешно обновлено в ${pluginFile.name}")
             } else {
-                println("Файл ${nflPluginFile.absolutePath} не найден!")
+                println("Файл ${pluginFile.absolutePath} не найден!")
             }
 
             if (!botToken.isNullOrEmpty()) {
@@ -257,7 +257,7 @@ tasks.register<Exec>("buildDex") {
                         token = botToken,
                         chatId = targetChatId,
                         messageThreadId = targetTopicId,
-                        file = nflPluginFile,
+                        file = pluginFile,
                         caption = caption
                     )
                 } catch (e: Exception) {
