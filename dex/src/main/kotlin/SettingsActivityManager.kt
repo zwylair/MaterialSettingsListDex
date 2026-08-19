@@ -1,5 +1,7 @@
 package org.zwylair.msldex
 
+import org.telegram.messenger.AndroidUtilities
+
 class SettingsActivityManager {
     @Volatile
     private var settingsActivity: Any? = null
@@ -65,8 +67,10 @@ class SettingsActivityManager {
         try {
             val listView = fragment.getFieldValue("listView") ?: return
             val adapter = listView.getFieldValue("adapter") ?: return
-            adapter.safeInvoke("update", 1, false)
-            PluginCore.log("SettingsActivity refreshed successfully.")
+            AndroidUtilities.runOnUIThread {
+                adapter.safeInvoke("update", 1, false)
+                PluginCore.log("SettingsActivity refreshed successfully.")
+            }
         } catch (e: Exception) {
             PluginCore.log("SettingsActivityManager.refreshSettingsActivity failed:", exception = e)
         }
