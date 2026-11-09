@@ -62,7 +62,6 @@ class PaletteManager {
 
     private fun generateM3Pair(baseColor: Int, isDark: Boolean, isMonet: Boolean): PaletteColors {
         val hsl = FloatArray(3)
-        org.telegram.ui.SettingsActivity()
         ColorUtils.colorToHSL(baseColor, hsl)
 
         val hue = hsl[0]

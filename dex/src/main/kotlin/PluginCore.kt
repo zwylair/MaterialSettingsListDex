@@ -5,7 +5,7 @@ import com.exteragram.messenger.utils.AppUtils
 import de.robv.android.xposed.XC_MethodHook
 
 object PluginCore {
-    const val DEX_VERSION = "1.0.1"
+    const val DEX_VERSION = "1.1.0"
 
     var appContext: Context? = null
     var unhookObjs: ArrayList<XC_MethodHook.Unhook> = arrayListOf()
@@ -38,7 +38,7 @@ object PluginCore {
         catch (error: Throwable) { log(exception = error) }
 
         clearReflectionCache()
-        settingsActivityManager.clear()
+        settingsActivityManager.refreshSettingsActivities()
 
         log("Unloaded.")
         appContext = null

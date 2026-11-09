@@ -21,15 +21,14 @@ class ListItemsManager {
         try {
             val settingsActivityClazz = findClass("org.telegram.ui.SettingsActivity")!!
             settingsActivityClazz.findMethodMaxArgs("fillItems")!!.after { onFillItemsAfter(it) }
-
-            val mainTabsActivityClazz = findClass("org.telegram.ui.MainTabsActivity")!!
-            mainTabsActivityClazz.findMethodMaxArgs("createBaseFragmentAt")!!.after { onCreateBaseFragmentAtAfter(it) }
         } catch (e: Throwable) {
             PluginCore.log("ListItemsManager.setupHooks failed:", exception = e)
         }
     }
 
     private fun onFillItemsAfter(param: MethodHookParam) {
+        (param.thisObject as? SettingsActivity)?.let { PluginCore.settingsActivityManager.track(it) }
+
         @Suppress("UNCHECKED_CAST")
         val items = param.args[0] as? ArrayList<UItem> ?: return
 
@@ -152,15 +151,5 @@ class ListItemsManager {
         result.addAll(reorderedBlock)
         result.addAll(tail)
         return result
-    }
-
-    private fun onCreateBaseFragmentAtAfter(param: MethodHookParam) {
-        val result = param.result ?: return
-        val settingsActivityClazz = findClass("org.telegram.ui.SettingsActivity") ?: return
-
-        if (settingsActivityClazz.isInstance(result)) {
-            PluginCore.settingsActivityManager.cacheActivity(result)
-            PluginCore.log("Intercepted settings activity creation; cached.")
-        }
     }
 }

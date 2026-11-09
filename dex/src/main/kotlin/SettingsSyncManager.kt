@@ -30,7 +30,7 @@ object SettingsSyncManager {
         SettingsState.debloatHelpSection = debloatHelpSection
 
         PluginCore.paletteManager.bakePalettes()
-        PluginCore.settingsActivityManager.refreshSettingsActivity()
+        PluginCore.settingsActivityManager.refreshSettingsActivities()
     }
 
     @Suppress("unused")
@@ -38,7 +38,7 @@ object SettingsSyncManager {
     fun setReorderSettingsList(value: Boolean) {
         SettingsState.reorderSettingsList = value
         PluginCore.paletteManager.bakePalettes()
-        PluginCore.settingsActivityManager.refreshSettingsActivity()
+        PluginCore.settingsActivityManager.refreshSettingsActivities()
     }
 
     @Suppress("unused")
@@ -73,7 +73,7 @@ object SettingsSyncManager {
         applyValue()
 
         pendingDebloatRefresh?.let { debounceHandler.removeCallbacks(it) }
-        val runnable = Runnable { PluginCore.settingsActivityManager.refreshSettingsActivity() }
+        val runnable = Runnable { PluginCore.settingsActivityManager.refreshSettingsActivities() }
         pendingDebloatRefresh = runnable
         debounceHandler.postDelayed(runnable, 1_000L)
     }

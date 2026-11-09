@@ -1,78 +1,53 @@
 package org.zwylair.msldex
 
+import android.util.SparseArray
+import java.util.Collections
+import java.util.WeakHashMap
 import org.telegram.messenger.AndroidUtilities
+import org.telegram.ui.ActionBar.BaseFragment
+import org.telegram.ui.ActionBar.INavigationLayout
+import org.telegram.ui.Components.UniversalRecyclerView
+import org.telegram.ui.SettingsActivity
 
 class SettingsActivityManager {
-    @Volatile
-    private var settingsActivity: Any? = null
+    private val activities: MutableSet<SettingsActivity> = Collections.newSetFromMap(WeakHashMap())
 
-    fun cacheActivity(activity: Any) {
-        settingsActivity = activity
+    fun track(activity: SettingsActivity) {
+        synchronized(activities) { activities.add(activity) }
     }
 
-    fun clear() {
-        settingsActivity = null
-    }
-
-    private fun getActionBarLayoutFragmentStack(): List<Any>? {
-        val launchActivityClazz = findClass("org.telegram.ui.LaunchActivity") ?: return null
-        val instanceField = launchActivityClazz.getDeclaredField("instance").apply { isAccessible = true }
-        val instance = instanceField.get(null) ?: return null
-
-        val actionBarLayout = instance.getFieldValue("actionBarLayout") ?: return null
-
-        @Suppress("UNCHECKED_CAST")
-        return actionBarLayout.safeInvoke("getFragmentStack") as? List<Any>
-    }
-
-    private fun getTelegramFragmentByClass(clazz: Class<*>): Any? {
-        val fragmentStack = getActionBarLayoutFragmentStack() ?: return null
-        return fragmentStack.firstOrNull { clazz.isInstance(it) }
-    }
-
-    fun getSettingsFragment(): Any? {
-        settingsActivity?.let { return it }
-
-        val mainTabsClazz = findClass("org.telegram.ui.MainTabsActivity") ?: return null
-        val mainTabsFragment = getTelegramFragmentByClass(mainTabsClazz)
-        if (mainTabsFragment == null) {
-            PluginCore.log("SettingsActivity fragment not found active.")
-            return null
-        }
-
-        val holders = mainTabsFragment.getFieldValue("fragmentsArr") ?: return null
-        val method = mainTabsFragment.findMethod("getPositionCallsOrSettings") ?: return null
-        val settingsHolderIndex = method.invoke(mainTabsFragment) ?: return null
-
-        val holder = holders.safeInvoke("get", 1, settingsHolderIndex) ?: return null
-        val fragment = holder.getFieldValue("fragment") ?: return null
-
-        val settingsActivityClazz = findClass("org.telegram.ui.SettingsActivity") ?: return null
-        if (settingsActivityClazz.isInstance(fragment)) {
-            settingsActivity = fragment
-            return fragment
-        }
-
-        PluginCore.log("SettingsActivity fragment not found active.")
-        return null
-    }
-
-    fun refreshSettingsActivity() {
-        val fragment = getSettingsFragment()
-        if (fragment == null) {
-            PluginCore.log("SettingsActivity is not initialised.")
-            return
-        }
-
-        try {
-            val listView = fragment.getFieldValue("listView") ?: return
-            val adapter = listView.getFieldValue("adapter") ?: return
-            AndroidUtilities.runOnUIThread {
-                adapter.safeInvoke("update", 1, false)
-                PluginCore.log("SettingsActivity refreshed successfully.")
+    private fun collectFromFragmentStack() {
+        val launchActivity = findClass("org.telegram.ui.LaunchActivity")?.getField("instance")?.get(null) ?: return
+        val layout = launchActivity.getFieldValue("actionBarLayout") as? INavigationLayout ?: return
+        val stack = layout.fragmentStack ?: return
+        val viewPagerClazz = findClass("org.telegram.ui.ViewPagerActivity")
+        for (fragment in stack.toList()) {
+            if (fragment is SettingsActivity) {
+                track(fragment)
+                continue
             }
-        } catch (e: Exception) {
-            PluginCore.log("SettingsActivityManager.refreshSettingsActivity failed:", exception = e)
+            if (viewPagerClazz?.isInstance(fragment) != true) continue
+
+            val states = fragment.getFieldValue("fragmentsArr") as? SparseArray<*> ?: continue
+            for (i in 0 until states.size()) {
+                val tab = states.valueAt(i)?.getFieldValue("fragment") as? BaseFragment
+                if (tab is SettingsActivity) track(tab)
+            }
+        }
+    }
+
+    fun refreshSettingsActivities() {
+        AndroidUtilities.runOnUIThread {
+            try {
+                collectFromFragmentStack()
+                val snapshot = synchronized(activities) { activities.toList() }
+                for (activity in snapshot) {
+                    (activity.getFieldValue("listView") as? UniversalRecyclerView)?.adapter?.update(false)
+                }
+                PluginCore.log("Refreshed ${snapshot.size} SettingsActivity instance(s).")
+            } catch (e: Throwable) {
+                PluginCore.log("SettingsActivityManager.refreshSettingsActivities failed:", exception = e)
+            }
         }
     }
 }
