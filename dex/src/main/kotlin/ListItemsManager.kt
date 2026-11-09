@@ -3,6 +3,7 @@ package org.zwylair.msldex
 import de.robv.android.xposed.XC_MethodHook.MethodHookParam
 import org.telegram.tgnet.TLRPC
 import org.telegram.ui.Components.UItem
+import org.telegram.ui.SettingsActivity
 
 class ListItemsManager {
 
@@ -11,9 +12,9 @@ class ListItemsManager {
         listOf(1, 3, 8),             // Account & Security
         listOf(2, 7, 10),            // Interface
         listOf(5, 6, 9),             // Notifications & Data
-        listOf(11, 12, 13, 15, 16),  // Monetisation
+        listOf(11, 12, 13, 25, 15, 16),  // Monetisation
         listOf(17, 18, 23, 19),      // Info
-        listOf(20, 21, 22),          // Debug
+        listOf(24, 26, 20, 21, 22),  // Experimental & Debug
     )
 
     fun setupHooks() {
@@ -45,7 +46,7 @@ class ListItemsManager {
         items.addAll(list)
     }
 
-    private fun isSettingOption(item: UItem) = item.longValue != 0L
+    private fun isSettingOption(item: UItem) = item.instanceOf(SettingsActivity.SettingCell.Factory::class.java)
     private fun isVersionShadow(item: UItem) = item.viewType == -4
     private fun isPureShadow(item: UItem) = item.viewType == 7
     private fun isHeader(item: UItem) = item.viewType == 0
@@ -79,6 +80,7 @@ class ListItemsManager {
         if (SettingsState.debloatMyTon) blacklistedIds.add(13)
         if (SettingsState.debloatTgBusiness) blacklistedIds.add(15)
         if (SettingsState.debloatSendGift) blacklistedIds.add(16)
+        if (SettingsState.debloatWallet) blacklistedIds.add(25)
         if (SettingsState.debloatHelpSection) blacklistedIds.addAll(listOf(17, 18, 23, 19))
 
         if (blacklistedIds.isEmpty()) return items

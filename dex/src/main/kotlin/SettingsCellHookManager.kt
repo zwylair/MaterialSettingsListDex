@@ -29,6 +29,8 @@ class SettingsCellHookManager(private val paletteManager: PaletteManager) {
     }
 
     private fun onFactoryHook(param: MethodHookParam) {
+        if (param.args[1] == 0 && param.args[2] == 0) return
+
         val arg0 = param.args[0]
         val palette = paletteManager.getPalette()
 
@@ -48,6 +50,12 @@ class SettingsCellHookManager(private val paletteManager: PaletteManager) {
     private fun onBindViewHook(param: MethodHookParam) {
         val cell = param.args[0] ?: return
         val item = param.args[1] as? UItem ?: return
+        val iconView = cell.safeInvoke("getIconView") as? View ?: return
+
+        if (item.longValue == 0L) {
+            iconView.tag = null
+            return
+        }
 
         val palette = paletteManager.getPalette()
         val iconColor = if (item.`object` is TLRPC.TL_attachMenuBot) {
@@ -56,7 +64,6 @@ class SettingsCellHookManager(private val paletteManager: PaletteManager) {
             palette.forButtonId(item.id).iconColor
         }
 
-        val iconView = cell.safeInvoke("getIconView") as? View ?: return
         iconView.tag = iconColor
     }
 

@@ -118,6 +118,7 @@ class PaletteManager {
             11 to COLOR_GOLD,  // Premium
             12 to COLOR_GOLD,  // Stars
             13 to COLOR_GOLD,  // MyTON
+            25 to COLOR_GOLD,  // Wallet
             15 to COLOR_GOLD,  // Business
             16 to COLOR_GOLD,  // SendAGift
 
@@ -147,6 +148,7 @@ class PaletteManager {
             11 to Color.parseColor("#B659FF"),  // Telegram Premium
             12 to Color.parseColor("#EFA612"),  // Telegram Stars
             13 to Color.parseColor("#1BA4ED"),  // MyTON
+            25 to Color.parseColor("#1BA4ED"),  // Wallet
             15 to Color.parseColor("#F45255"),  // Telegram Business
             16 to Color.parseColor("#F38B31"),  // Send a Gift
             17 to Color.parseColor("#E89416"),  // AskAQuestion
