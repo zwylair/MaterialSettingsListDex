@@ -89,6 +89,7 @@ class PaletteManager {
     companion object {
         val COLOR_EXTERA = Color.parseColor("#EA6161")
         val COLOR_AYU = Color.parseColor("#B161EA")
+        val COLOR_PURPLE = Color.parseColor("#877DD1")
         val COLOR_BLUE = Color.parseColor("#1796E7")
         val COLOR_GREEN = Color.parseColor("#3EC03D")
         val COLOR_ORANGE = Color.parseColor("#EA7722")
@@ -101,6 +102,7 @@ class PaletteManager {
         val BASE_CATEGORY_COLORS_REGROUP: Map<Int, Int> = mapOf(
             -1 to COLOR_EXTERA,
             -2 to COLOR_AYU,
+            -3 to COLOR_PURPLE,
 
             1 to COLOR_BLUE,   // Account
             3 to COLOR_BLUE,   // PrivacySecurity
@@ -135,6 +137,7 @@ class PaletteManager {
         val BASE_CATEGORY_COLORS: Map<Int, Int> = mapOf(
             -1 to Color.parseColor("#E83030"),  // Preferences (exteraGram)
             -2 to Color.parseColor("#9570FF"),  // Preferences (AyuGram)
+            -3 to Color.parseColor("#5C50AA"),
             1 to Color.parseColor("#1796E7"),   // SettingsAccount
             2 to Color.parseColor("#E89416"),   // SettingsChat
             3 to Color.parseColor("#3EC03D"),   // SettingsPrivacySecurity

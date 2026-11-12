@@ -8,7 +8,7 @@ import org.telegram.ui.SettingsActivity
 class ListItemsManager {
 
     private val reorderGroups = listOf(
-        listOf(-1, -2),              // Client menus
+        listOf(-1, -2, -3),          // Client menus
         listOf(1, 3, 8),             // Account & Security
         listOf(2, 7, 10),            // Interface
         listOf(5, 6, 9),             // Notifications & Data
