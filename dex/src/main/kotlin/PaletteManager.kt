@@ -132,6 +132,8 @@ class PaletteManager {
             20 to COLOR_GREEN,
             21 to COLOR_GREEN,
             22 to Color.parseColor("#EA4555"),
+            24 to Color.parseColor("#EA4555"),
+            26 to COLOR_GREEN,
         )
 
         val BASE_CATEGORY_COLORS: Map<Int, Int> = mapOf(
@@ -160,6 +162,8 @@ class PaletteManager {
             20 to Color.parseColor("#3EC03D"),  // DebugSendLogs
             21 to Color.parseColor("#3EC03D"),  // DebugSendLastLogs
             22 to Color.parseColor("#EA4555"),  // DebugClearLogs
+            24 to Color.parseColor("#EA4555"),  // RoundVideoSettings
+            26 to Color.parseColor("#3EC03D"),  // AudioRecorderSettings
         )
     }
 }
