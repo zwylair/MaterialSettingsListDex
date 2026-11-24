@@ -26,6 +26,9 @@ class PaletteManager {
         else -> if (Theme.isCurrentThemeDark()) darkPalette else lightPalette
     }
 
+    fun forBaseColor(baseColor: Int): PaletteColors =
+        generateM3Pair(baseColor, Theme.isCurrentThemeDark(), Theme.isCurrentThemeMonet())
+
     fun bakePalettes() {
         try {
             darkPalette.clear()

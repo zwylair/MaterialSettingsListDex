@@ -2,6 +2,8 @@ package org.zwylair.msldex
 
 object SettingsState {
     @Volatile var reorderSettingsList: Boolean = false
+    @Volatile var md3Style: Boolean = false
+    @Volatile var forkSubtitles: Map<Int, CharSequence> = emptyMap()
 
     @Volatile var debloatTgPrem: Boolean = false
     @Volatile var debloatTgStars: Boolean = false

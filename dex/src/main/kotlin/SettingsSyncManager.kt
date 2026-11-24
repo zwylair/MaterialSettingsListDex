@@ -12,6 +12,7 @@ object SettingsSyncManager {
     @JvmStatic
     fun syncInitialState(
         reorderSettingsList: Boolean,
+        md3Style: Boolean,
         debloatTgPrem: Boolean,
         debloatTgStars: Boolean,
         debloatMyTon: Boolean,
@@ -21,6 +22,7 @@ object SettingsSyncManager {
         debloatHelpSection: Boolean,
     ) {
         SettingsState.reorderSettingsList = reorderSettingsList
+        SettingsState.md3Style = md3Style
         SettingsState.debloatTgPrem = debloatTgPrem
         SettingsState.debloatTgStars = debloatTgStars
         SettingsState.debloatMyTon = debloatMyTon
@@ -38,6 +40,20 @@ object SettingsSyncManager {
     fun setReorderSettingsList(value: Boolean) {
         SettingsState.reorderSettingsList = value
         PluginCore.paletteManager.bakePalettes()
+        PluginCore.settingsActivityManager.refreshSettingsActivities()
+    }
+
+    @Suppress("unused")
+    @JvmStatic
+    fun setMd3Style(value: Boolean) {
+        SettingsState.md3Style = value
+        PluginCore.settingsActivityManager.refreshSettingsActivities()
+    }
+
+    @Suppress("unused")
+    @JvmStatic
+    fun setForkSubtitles(ids: IntArray, subtitles: Array<String>) {
+        SettingsState.forkSubtitles = ids.zip(subtitles).filter { it.second.isNotEmpty() }.toMap()
         PluginCore.settingsActivityManager.refreshSettingsActivities()
     }
 

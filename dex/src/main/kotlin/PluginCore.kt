@@ -5,7 +5,7 @@ import com.exteragram.messenger.utils.AppUtils
 import de.robv.android.xposed.XC_MethodHook
 
 object PluginCore {
-    const val DEX_VERSION = "1.1.1"
+    const val DEX_VERSION = "1.2.0"
 
     var appContext: Context? = null
     var unhookObjs: ArrayList<XC_MethodHook.Unhook> = arrayListOf()
@@ -14,6 +14,8 @@ object PluginCore {
     val paletteManager = PaletteManager()
     @JvmField
     val settingsCellHooks = SettingsCellHookManager(paletteManager)
+    @JvmField
+    val iconShapeHooks = IconShapeHookManager(paletteManager)
     @JvmField
     val listItemsManager = ListItemsManager()
     @JvmField
@@ -26,6 +28,7 @@ object PluginCore {
 
         paletteManager.bakePalettes()
         settingsCellHooks.setupHooks()
+        iconShapeHooks.setupHooks()
         listItemsManager.setupHooks()
 
         log("DEX v$DEX_VERSION loaded.")
