@@ -12,10 +12,10 @@ dependencyResolutionManagement {
         google()
         mavenCentral()
 
-        // exterahook is published only to the maven mirror inside the host checkout
+        // the hook library is published only to the maven mirror inside the host checkout
         maven {
             url = uri("${providers.gradleProperty("host.dir").get()}/Tools/maven")
-            content { includeGroupByRegex("""dev\.exterahook(\..+)?""") }
+            content { includeGroupByRegex("""com\.exteragram\.hook(\..+)?""") }
         }
     }
 }
